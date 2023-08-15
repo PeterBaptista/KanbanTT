@@ -1,10 +1,13 @@
 'use client'
 
 import React, { useState, useEffect } from 'react';
-import { Card, Flex, Text, Container, Heading, Stack } from "@chakra-ui/react";
-import { DragDropContext, Droppable, Draggable, DropResult } from "react-beautiful-dnd";
+import { Card, CardHeader, CardBody, CardFooter, Text, Box, Heading, IconButton, ButtonGroup, Divider } from "@chakra-ui/react";
+import { AddIcon, EditIcon } from '@chakra-ui/icons';
+import { DragDropContext, Droppable, Draggable, DropResult, DraggableProvidedDraggableProps } from "react-beautiful-dnd";
+import AddTask from './AddTask';
+import EditTask from './EditTask';
 
-const reorder = (list, startIndex, endIndex) => {
+const reorder = (list: TaskProps[] , startIndex: number, endIndex: number) => {
     const result = Array.from(list);
     const [removed] = result.splice(startIndex, 1);
     result.splice(endIndex, 0, removed);
@@ -14,21 +17,23 @@ const reorder = (list, startIndex, endIndex) => {
 
 const grid = 8;
 
-const getItemStyle = (isDragging, draggableStyle) => ({
+const getItemStyle = (isDragging: boolean, draggableStyle: DraggableProvidedDraggableProps["style"]) => ({
     // some basic styles to make the items look a bit nicer
     userSelect: "none",
-    padding: grid * 2,
     margin: `0 0 ${grid}px 0`,
+    borderRadius: "5px",
 
     // change background colour if dragging
-    background: isDragging ? "lightgreen" : "grey",
+    background: isDragging ? "#B7791F" : "grey",
 
     // styles we need to apply on draggables
     ...draggableStyle
 });
 
-const getListStyle = isDraggingOver => ({
-    background: isDraggingOver ? "lightblue" : "lightgrey",
+const getListStyle = (isDraggingOver: boolean) => ({
+    background: isDraggingOver ? "#4A5568" : "#171923",
+    borderRadius: "15px",
+
     padding: grid,
     width: 250
 });
@@ -47,8 +52,13 @@ interface TaskProps {
 
 interface ColumnProps {
     type: columnTypes,
-    columnData: TaskProps[]
+    columnData: TaskProps[],
+    addTask: (taskData: TaskProps) => void,
+    editTask: (taskData: TaskProps) => void,
+    setColumnData: (columnData: TaskProps[], type: columnTypes) => void
+
 }
+
 
 
 
@@ -59,20 +69,11 @@ const columns = {
 
 }
 
-const Task: React.FC<TaskProps> = ({ id, type, content, important }) => {
-
-    return (
-        <Card width="100%" padding="1vh">
-            <Text fontSize="20px">{content}</Text>
-        </Card>
-    )
-
-}
 
 
-const Column: React.FC<ColumnProps> = ({ type, columnData }) => {
+const Column: React.FC<ColumnProps> = ({ type, columnData, addTask, editTask, setColumnData }) => {
 
-    const [items, setItems] = useState<TaskProps[]>(columnData);
+    
 
     const onDragEnd = (result: DropResult) => {
         if (!result.destination) {
@@ -80,55 +81,76 @@ const Column: React.FC<ColumnProps> = ({ type, columnData }) => {
         }
 
         const newItems = reorder(
-            items,
+            columnData,
             result.source.index,
             result.destination.index
         );
 
-        setItems(newItems);
+        setColumnData(newItems, type);
     };
+    
+
 
 
 
     return (
         <>
-            <Flex flexDirection="column"  >
-                <Heading textAlign="center">
-                    {columns[type].label}
-                </Heading>
-                <Container width="40vh" height="80vh" backgroundColor="gray.700" padding="2vh" borderRadius="2vh">
-                    <DragDropContext onDragEnd={onDragEnd}>
-                        <Droppable droppableId="droppable">
-                            {(provided, snapshot) => (
-                                <div
-                                    {...provided.droppableProps}
-                                    ref={provided.innerRef}
-                                    style={getListStyle(snapshot.isDraggingOver)}
-                                >
-                                    {items.map((item, index) => (
-                                        <Draggable key={item.id} draggableId={item.id} index={index}>
-                                            {(provided, snapshot) => (
-                                                <div
-                                                    ref={provided.innerRef}
-                                                    {...provided.draggableProps}
-                                                    {...provided.dragHandleProps}
-                                                    style={getItemStyle(
-                                                        snapshot.isDragging,
-                                                        provided.draggableProps.style
-                                                      )}
+            <div>
+
+
+                <DragDropContext onDragEnd={onDragEnd}>
+
+                    <Droppable droppableId="droppable">
+                        {(provided, snapshot) => (
+                            <div
+                                {...provided.droppableProps}
+                                ref={provided.innerRef}
+                                style={getListStyle(snapshot.isDraggingOver)}
+                            >
+                                <Box display="flex" alignItems="center" justifyContent="space-between">
+
+                                    <Heading padding="10px 10px 10px 10px" fontSize="20px" marginBottom="20px" color="gray.300">
+                                        {columns[type].label}
+                                    </Heading>
+
+                                    <AddTask addTask={addTask} type={type}/>
+                                </Box>
+                                <Divider color="white" marginBottom={5} />
+
+                                {columnData.map((item, index) => (
+                                    <Draggable key={item.id} draggableId={item.id} index={index}>
+                                        {(provided, snapshot) => (
+                                            <div
+                                                ref={provided.innerRef}
+                                                {...provided.draggableProps}
+                                                {...provided.dragHandleProps}
+                                                style={getItemStyle(
+                                                    snapshot.isDragging,
+                                                    provided.draggableProps.style
+                                                )}
+                                            >
+                                                <Card alignItems="center"
+                                                    direction={{ base: 'column', sm: 'row' }}
+                                                    overflow='hidden'
+                                                    paddingRight={3}
+                                                    background={item.important === true ? "red.300" : "gray.300"}
                                                 >
-                                                    {item.content}
-                                                </div>
-                                            )}
-                                        </Draggable>
-                                    ))}
-                                    {provided.placeholder}
-                                </div>
-                            )}
-                        </Droppable>
-                    </DragDropContext>
-                </Container>
-            </Flex>
+                                                    <CardBody overflow='hidden' maxHeight="140px">
+                                                        <Text>{item.content}</Text>
+                                                    </CardBody>
+                                                    <EditTask id={item.id} task={item.content} type={type} editTask={editTask}/>
+                                                </Card>
+
+                                            </div>
+                                        )}
+                                    </Draggable>
+                                ))}
+                                {provided.placeholder}
+                            </div>
+                        )}
+                    </Droppable>
+                </DragDropContext>
+            </div>
         </>
     );
 

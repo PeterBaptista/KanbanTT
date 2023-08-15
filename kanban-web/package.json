@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@chakra-ui/icons": "^2.1.0",
     "@chakra-ui/next-js": "^2.1.5",
     "@chakra-ui/react": "^2.8.0",
     "@emotion/react": "^11.11.1",
@@ -26,9 +27,11 @@
     "react-beautiful-dnd": "^13.1.1",
     "react-dom": "18.2.0",
     "tailwindcss": "3.3.3",
-    "typescript": "5.1.6"
+    "typescript": "5.1.6",
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
-    "@types/react-beautiful-dnd": "^13.1.4"
+    "@types/react-beautiful-dnd": "^13.1.4",
+    "@types/uuid": "^9.0.2"
   }
 }
