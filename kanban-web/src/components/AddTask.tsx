@@ -8,6 +8,7 @@ import { useDisclosure } from "@chakra-ui/react";
 
 type columnTypes = "todo" | "inprogress" | "done"
 
+
 type TaskProps = {
     id: string,
     type: columnTypes,
@@ -20,6 +21,8 @@ interface addTaskProps {
     addTask: (taskData: TaskProps) => void,
     type: columnTypes
 }
+
+
 
 
 const AddTask: React.FC<addTaskProps> = ({addTask, type }) => {
@@ -38,7 +41,7 @@ const AddTask: React.FC<addTaskProps> = ({addTask, type }) => {
         const newTask: TaskProps = {id: uuidv4(), type: type, content: currentValue, important: isChecked}
         addTask(newTask)
 
-        console.log(newTask)
+        console.log("add task: ", newTask)
         onClose()
 
     }

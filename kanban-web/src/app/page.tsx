@@ -1,10 +1,16 @@
 'use client'
 import * as React from 'react'
-import { Flex, Heading, Box, Divider, AbsoluteCenter, Text } from '@chakra-ui/react'
+import { useEffect } from 'react'
+import { Flex, Heading, Box, Divider, Button, Stack, AbsoluteCenter, Center, Link } from '@chakra-ui/react'
 import Column from '../components/Column'
+import { Providers, useDataState, useDataDispatch } from './providers';
+import { ArrowForwardIcon } from '@chakra-ui/icons'
+
 
 
 type columnTypes = "todo" | "inprogress" | "done"
+
+
 
 type TaskProps = {
   id: string,
@@ -14,111 +20,107 @@ type TaskProps = {
 
 }
 
-
-
-
-
+type KanbanData = {
+  todoData: TaskProps[] | [],
+  inProgressData: TaskProps[] | [],
+  doneData: TaskProps[] | []
+};
 
 export default function Home() {
 
+  const { kanbanData } = useDataState();
+  const dispatch = useDataDispatch();
 
-  const [todoData, setTodoData] = React.useState<TaskProps[] | []>([])
-  const [inProgressData, setInProgressData] = React.useState<TaskProps[] | []>([])
-  const [doneData, setDoneData] = React.useState<TaskProps[] | []>([])
 
-  function editTask(taskData: TaskProps){
-      let formattedData = []
-      
-      switch (taskData.type) {
-        case "todo":
-          formattedData = todoData.map((item) => item.id === taskData.id ? taskData : item)
-          setTodoData(formattedData)
-          break;
+  const { todoData, inProgressData, doneData } = kanbanData
 
-        case "inprogress":
-          console.log("entrou")
-          formattedData = inProgressData.map((item) => item.id === taskData.id ? taskData : item)
-          console.log(formattedData)
-          setInProgressData(formattedData)
-          break;
-
-        case "done":
-          formattedData = doneData.map((item) => item.id === taskData.id ? taskData : item)
-          setDoneData(formattedData)
-          break;
-
-        default:
-          break;
-      }
-
-      console.log(taskData)
-  }
-
-  function addTask(taskData: TaskProps){
+  function editTask(taskData: TaskProps) {
     let formattedData = []
-    
+    let payload: KanbanData = kanbanData
+
+
     switch (taskData.type) {
       case "todo":
-        formattedData = [taskData,...todoData]
-        setTodoData(formattedData)
+        formattedData = todoData.map((item) => item.id === taskData.id ? taskData : item)
+        payload = { ...kanbanData, todoData: formattedData }
+        dispatch({ type: "SET_DATA", payload: payload })
         break;
 
       case "inprogress":
-        console.log("entrou")
+        formattedData = inProgressData.map((item) => item.id === taskData.id ? taskData : item)
+        payload = { ...kanbanData, inProgressData: formattedData }
+        dispatch({ type: "SET_DATA", payload })
+
+        break;
+
+      case "done":
+        formattedData = doneData.map((item) => item.id === taskData.id ? taskData : item)
+        payload = { ...kanbanData, doneData: formattedData }
+        dispatch({ type: "SET_DATA", payload })
+        break;
+
+      default:
+        break;
+    }
+
+    localStorage.setItem('kanbanData', JSON.stringify(payload));
+  }
+
+
+  function addTask(taskData: TaskProps) {
+    let formattedData = []
+    let payload: KanbanData = kanbanData
+
+
+    switch (taskData.type) {
+      case "todo":
+        formattedData = [taskData, ...todoData]
+        payload = { ...kanbanData, todoData: formattedData }
+        console.log("Payload", payload)
+        dispatch({ type: "SET_DATA", payload: payload })
+        break;
+
+      case "inprogress":
         formattedData = [taskData, ...inProgressData]
-        console.log(formattedData)
-        setInProgressData(formattedData)
+        payload = { ...kanbanData, inProgressData: formattedData }
+        dispatch({ type: "SET_DATA", payload })
+
         break;
 
       case "done":
         formattedData = [taskData, ...doneData]
-        setDoneData(formattedData)
+        payload = { ...kanbanData, doneData: formattedData }
+        dispatch({ type: "SET_DATA", payload })
         break;
 
       default:
         break;
     }
 
-    console.log(taskData)
-}
-  
-  function setColumnData(columnData: TaskProps[], type: columnTypes){
-    
-    switch (type) {
-      case "todo":
-        
-        setTodoData(columnData)
-        break;
+    localStorage.setItem('kanbanData', JSON.stringify(payload));
+  }
 
-      case "inprogress":
 
-        setInProgressData(columnData)
-        break;
-
-      case "done":
-        
-        setDoneData(columnData)
-        break;
-
-      default:
-        break;
-    }
-
-}
-
+  console.log("kanbandata", kanbanData)
   return (
-    <main>
-      <Box position='relative' padding='10'>
-        <Divider />
-        <AbsoluteCenter bg="black" px='4'>
-          <Heading>Projeto Kanban</Heading>
-        </AbsoluteCenter>
-      </Box>
-      <Flex flexDirection="row" justifyContent="space-around" alignItems="stretch">
-        <Column type="todo" columnData={todoData} addTask={addTask} editTask={editTask} setColumnData={setColumnData} />
-        <Column type="inprogress" columnData={inProgressData} addTask={addTask} editTask={editTask} setColumnData={setColumnData} />
-        <Column type="done" columnData={doneData} addTask={addTask} editTask={editTask} setColumnData={setColumnData} />
-      </Flex>
-    </main>
+    <Providers>
+      <main>
+        <Box as='header' position='relative' padding='7' display="flex" justifyContent="space-between"  >
+          <AbsoluteCenter px='4'>
+            <Heading>Projeto Kanban</Heading>
+          </AbsoluteCenter>
+          <Button rightIcon={<ArrowForwardIcon />} colorScheme='teal' variant='solid'>
+            <Link href='/dashboard'>DASHBOARD</ Link>
+          </Button>
+        </Box>
+        <Divider marginBottom={5} borderWidth="2px" />
+
+        <Flex flexDirection="row" justifyContent="space-around" alignItems="stretch">
+          <Column kanbanData={kanbanData} useDispatch={(action) => dispatch(action)} columnData={kanbanData.todoData} type="todo" addTask={addTask} editTask={editTask} />
+          <Column kanbanData={kanbanData} useDispatch={(action) => dispatch(action)} columnData={kanbanData.inProgressData} type="inprogress" addTask={addTask} editTask={editTask} />
+          <Column kanbanData={kanbanData} useDispatch={(action) => dispatch(action)} columnData={kanbanData.doneData} type="done" addTask={addTask} editTask={editTask} />
+        </Flex>
+      </main>
+    </Providers>
   )
 }

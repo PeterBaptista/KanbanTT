@@ -1,16 +1,20 @@
 'use client'
 
 import React, { useState, useEffect } from 'react';
-import { Card, CardHeader, CardBody, CardFooter, Text, Box, Heading, IconButton, ButtonGroup, Divider } from "@chakra-ui/react";
+import { Card, CardHeader, CardBody, CardFooter, Text, Box, Heading, IconButton, ButtonGroup, Divider, Switch } from "@chakra-ui/react";
 import { AddIcon, EditIcon } from '@chakra-ui/icons';
+import { Providers, useDataDispatch, useDataState } from '../app/providers';
 import { DragDropContext, Droppable, Draggable, DropResult, DraggableProvidedDraggableProps } from "react-beautiful-dnd";
 import AddTask from './AddTask';
 import EditTask from './EditTask';
 
-const reorder = (list: TaskProps[] , startIndex: number, endIndex: number) => {
+const reorder = (list: TaskProps[], startIndex: number, endIndex: number) => {
     const result = Array.from(list);
     const [removed] = result.splice(startIndex, 1);
     result.splice(endIndex, 0, removed);
+
+    console.log('list', list)
+    console.log('resultado', result)
 
     return result;
 };
@@ -41,6 +45,10 @@ const getListStyle = (isDraggingOver: boolean) => ({
 
 type columnTypes = "todo" | "inprogress" | "done"
 
+type Action = {
+    type: 'SET_DATA',
+    payload: KanbanData
+  }
 
 interface TaskProps {
     id: string,
@@ -55,9 +63,15 @@ interface ColumnProps {
     columnData: TaskProps[],
     addTask: (taskData: TaskProps) => void,
     editTask: (taskData: TaskProps) => void,
-    setColumnData: (columnData: TaskProps[], type: columnTypes) => void
-
+    kanbanData: KanbanData,
+    useDispatch: (action: Action) => void
 }
+
+type KanbanData = {
+    todoData: TaskProps[] | [],
+    inProgressData: TaskProps[] | [],
+    doneData: TaskProps[] | []
+};
 
 
 
@@ -71,87 +85,96 @@ const columns = {
 
 
 
-const Column: React.FC<ColumnProps> = ({ type, columnData, addTask, editTask, setColumnData }) => {
-
-    
+const Column: React.FC<ColumnProps> = ({ columnData, type, addTask, editTask, kanbanData, useDispatch }) => {
 
     const onDragEnd = (result: DropResult) => {
         if (!result.destination) {
             return;
         }
 
-        const newItems = reorder(
-            columnData,
-            result.source.index,
-            result.destination.index
-        );
+        let payload: KanbanData = kanbanData
+        switch (type) {
+            case 'todo':
 
-        setColumnData(newItems, type);
+                columnData = reorder(kanbanData.todoData, result.source.index, result.destination.index);
+                payload = { ...kanbanData, todoData: columnData }
+                break;
+
+            case 'inprogress':
+                columnData = reorder(kanbanData.inProgressData, result.source.index, result.destination.index);
+                payload = { ...kanbanData, inProgressData: columnData }
+                break;
+            case 'done':
+                columnData = reorder(kanbanData.doneData, result.source.index, result.destination.index);
+                payload = { ...kanbanData, doneData: columnData }
+                break;
+            default:
+                break;
+        }
+        console.log("result: ", result)
+        console.log("ondragend payload ", payload)
+        useDispatch({ type: "SET_DATA", payload })
+
     };
-    
 
 
 
 
     return (
-        <>
-            <div>
+        <div>
+            <DragDropContext onDragEnd={onDragEnd}>
 
+                <Droppable droppableId="droppable">
+                    {(provided, snapshot) => (
+                        <div
+                            {...provided.droppableProps}
+                            ref={provided.innerRef}
+                            style={getListStyle(snapshot.isDraggingOver)}
+                        >
+                            <Box display="flex" alignItems="center" justifyContent="space-between">
 
-                <DragDropContext onDragEnd={onDragEnd}>
+                                <Heading padding="10px 10px 10px 10px" fontSize="20px" marginBottom="20px" color="gray.300">
+                                    {columns[type].label}
+                                </Heading>
 
-                    <Droppable droppableId="droppable">
-                        {(provided, snapshot) => (
-                            <div
-                                {...provided.droppableProps}
-                                ref={provided.innerRef}
-                                style={getListStyle(snapshot.isDraggingOver)}
-                            >
-                                <Box display="flex" alignItems="center" justifyContent="space-between">
+                                <AddTask addTask={addTask} type={type} />
+                            </Box>
+                            <Divider color="white" marginBottom={5} />
 
-                                    <Heading padding="10px 10px 10px 10px" fontSize="20px" marginBottom="20px" color="gray.300">
-                                        {columns[type].label}
-                                    </Heading>
-
-                                    <AddTask addTask={addTask} type={type}/>
-                                </Box>
-                                <Divider color="white" marginBottom={5} />
-
-                                {columnData.map((item, index) => (
-                                    <Draggable key={item.id} draggableId={item.id} index={index}>
-                                        {(provided, snapshot) => (
-                                            <div
-                                                ref={provided.innerRef}
-                                                {...provided.draggableProps}
-                                                {...provided.dragHandleProps}
-                                                style={getItemStyle(
-                                                    snapshot.isDragging,
-                                                    provided.draggableProps.style
-                                                )}
+                            {columnData.map((item, index) => (
+                                <Draggable key={item.id} draggableId={item.id} index={index}>
+                                    {(provided, snapshot) => (
+                                        <div
+                                            ref={provided.innerRef}
+                                            {...provided.draggableProps}
+                                            {...provided.dragHandleProps}
+                                            style={getItemStyle(
+                                                snapshot.isDragging,
+                                                provided.draggableProps.style
+                                            )}
+                                        >
+                                            <Card alignItems="center"
+                                                direction={{ base: 'column', sm: 'row' }}
+                                                overflow='hidden'
+                                                paddingRight={3}
+                                                background={item.important === true ? "red.300" : "gray.300"}
                                             >
-                                                <Card alignItems="center"
-                                                    direction={{ base: 'column', sm: 'row' }}
-                                                    overflow='hidden'
-                                                    paddingRight={3}
-                                                    background={item.important === true ? "red.300" : "gray.300"}
-                                                >
-                                                    <CardBody overflow='hidden' maxHeight="140px">
-                                                        <Text>{item.content}</Text>
-                                                    </CardBody>
-                                                    <EditTask id={item.id} task={item.content} type={type} editTask={editTask}/>
-                                                </Card>
+                                                <CardBody overflow='hidden' maxHeight="140px">
+                                                    <Text>{item.content}</Text>
+                                                </CardBody>
+                                                <EditTask id={item.id} task={item.content} type={type} editTask={editTask} />
+                                            </Card>
 
-                                            </div>
-                                        )}
-                                    </Draggable>
-                                ))}
-                                {provided.placeholder}
-                            </div>
-                        )}
-                    </Droppable>
-                </DragDropContext>
-            </div>
-        </>
+                                        </div>
+                                    )}
+                                </Draggable>
+                            ))}
+                            {provided.placeholder}
+                        </div>
+                    )}
+                </Droppable>
+            </DragDropContext>
+        </div>
     );
 
 }
