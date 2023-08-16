@@ -21,7 +21,15 @@ Aqui está uma visualização rápida de como isso funciona:
 
 Isso permite que os membros da equipe movam tarefas de um estágio para outro, refletindo as mudanças no status do trabalho de forma intuitiva e interativa.
 
-Continue lendo para obter informações sobre como configurar e executar este projeto em seu ambiente local.
+# Demonstração de Adicionar uma Tarefa
+
+Uma das funcionalidades essenciais deste projeto é a capacidade de adicionar novas tarefas diretamente a uma coluna específica do quadro Kanban.
+
+Aqui está uma visualização rápida de como isso funciona:
+
+![image 2](https://github.com/PeterBaptista/KanbanTT/blob/master/kanban-web/public/addTask.gif)
+
+Isso permite que os membros da equipe criem novas tarefas e atribuam diretamente a uma coluna de acordo com o status atual do trabalho.
 
 
 
