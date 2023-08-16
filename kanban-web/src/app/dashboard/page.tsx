@@ -3,12 +3,13 @@
 import dynamic from "next/dynamic";
 const ApexChart = dynamic(() => import("react-apexcharts"), { ssr: false });
 import { ArrowForwardIcon, ExternalLinkIcon } from '@chakra-ui/icons';
-import { AbsoluteCenter, Box, Button, Divider, Flex, HStack, Heading, Link, Radio, Stack, Text, useRadio, useRadioGroup } from '@chakra-ui/react';
+import { AbsoluteCenter, Box, Button, Divider, Flex, HStack, Heading, Link, Radio, Stack, Text, UseRadioProps, useRadio, useRadioGroup } from '@chakra-ui/react';
 import * as React from 'react'
 import { useState } from 'react'
 import Chart from 'react-apexcharts'
 import { Providers, useDataDispatch, useDataState } from '../providers';
 import { todo } from "node:test";
+import { ApexOptions } from "apexcharts";
 
 
 type columnTypes = "todo" | "inprogress" | "done"
@@ -85,7 +86,7 @@ const RadioCharts: React.FC<KanbanTotal> = ({ todoTotal, inProgressTotal, doneTo
 
     const RenderChart = () => {
 
-        const barOptions = {
+        const barOptions: ApexOptions = {
             series: [{
                 name: "tasks",
                 data: kanbanSeries
@@ -112,7 +113,7 @@ const RadioCharts: React.FC<KanbanTotal> = ({ todoTotal, inProgressTotal, doneTo
             }
         };
 
-        const lineOptions = {
+        const lineOptions: ApexOptions = {
             series: [{
                 name: "tasks",
                 data: kanbanSeries
@@ -149,7 +150,7 @@ const RadioCharts: React.FC<KanbanTotal> = ({ todoTotal, inProgressTotal, doneTo
             }
         };
 
-        const pieOptions = {
+        const pieOptions: ApexOptions = {
             chart: {
                 type: 'pie'
             },
@@ -163,10 +164,7 @@ const RadioCharts: React.FC<KanbanTotal> = ({ todoTotal, inProgressTotal, doneTo
 
             title: {
                 text: 'Kanban Info'
-            },
-
-            background: 'black'
-            // Add other options specific to pie chart
+            }
         };
 
         switch (selectedChart) {
@@ -226,7 +224,7 @@ const RadioCharts: React.FC<KanbanTotal> = ({ todoTotal, inProgressTotal, doneTo
 
 
 const PieChart: React.FC<KanbanTotal> = ({ todoTotal, inProgressTotal, doneTotal }) => {
-    const chartOptions = {
+    const chartOptions: ApexOptions = {
         chart: {
             type: 'pie'
         },
@@ -240,10 +238,7 @@ const PieChart: React.FC<KanbanTotal> = ({ todoTotal, inProgressTotal, doneTotal
 
         title: {
             text: 'Kanban Info'
-        },
-
-        background: 'black'
-        // Add other options specific to pie chart
+        }
     };
 
 
@@ -261,7 +256,7 @@ export default function Home() {
 
 
     const { kanbanData } = useDataState();
-    console.log("kanban dashboard ", kanbanData)
+
 
     const todoTotal: number = kanbanData.todoData === undefined ? 0 : kanbanData.todoData.length
     const doneTotal: number = kanbanData.doneData === undefined ? 0 : kanbanData.doneData.length

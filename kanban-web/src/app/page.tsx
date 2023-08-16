@@ -124,8 +124,7 @@ export default function Home() {
         break;
 }
 
-console.log("source", sourceName, sourceColumn)
-console.log("dest", destName, destinationColumn)
+
 
   if (sInd === dInd) {
     newItems = reorder(sourceColumn, source.index, destination.index);
@@ -183,7 +182,6 @@ console.log("dest", destName, destinationColumn)
       case "todo":
         formattedData = [taskData, ...todoData]
         payload = { ...kanbanData, todoData: formattedData }
-        console.log("Payload", payload)
         dispatch({ type: "SET_DATA", payload: payload })
         break;
 
