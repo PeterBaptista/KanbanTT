@@ -111,9 +111,9 @@ const Column: React.FC<ColumnProps> = ({ columnData, type, addTask, editTask, ka
             default:
                 break;
         }
-        console.log("result: ", result)
-        console.log("ondragend payload ", payload)
+    
         useDispatch({ type: "SET_DATA", payload })
+        localStorage.setItem('kanbanData', JSON.stringify(payload));
 
     };
 
