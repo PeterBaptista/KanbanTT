@@ -31,10 +31,23 @@ Aqui está uma visualização rápida de como isso funciona:
 
 Isso permite que os membros da equipe criem novas tarefas e atribuam diretamente a uma coluna de acordo com o status atual do trabalho.
 
+# Demonstração de Edição de Tarefa
 
+Neste projeto, você pode facilmente editar as informações de uma tarefa existente no quadro Kanban.
 
+Aqui está uma visualização rápida de como isso funciona:
 
+![image 3](https://github.com/PeterBaptista/KanbanTT/blob/master/kanban-web/public/editar.gif)
 
+Isso permite que os membros da equipe atualizem os detalhes de uma tarefa, como título, descrição, responsável, prazo, e muito mais, para manter as informações precisas e atualizadas.
 
+# Dashboard de Dados do Kanban
+Além do quadro Kanban interativo, este projeto também oferece um dashboard que exibe informações detalhadas sobre o estado atual do trabalho. Esses insights são apresentados de forma visual e intuitiva, utilizando a biblioteca ApexCharts para criar gráficos dinâmicos.
+
+Aqui está uma visualização rápida de como o dashboard se parece:
+
+![dashboard](https://github.com/PeterBaptista/KanbanTT/blob/master/kanban-web/public/dashboard.gif)
+
+O dashboard oferece uma variedade de gráficos, como gráficos de barras, gráficos de pizza e muito mais, permitindo que você analise o desempenho das tarefas, identifique tendências e tome decisões informadas com base nos dados do Kanban.
 
 
