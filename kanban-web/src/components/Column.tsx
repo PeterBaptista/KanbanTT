@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardHeader, CardBody, CardFooter, Text, Box, Heading, IconButton, ButtonGroup, Divider, Switch } from "@chakra-ui/react";
 import { AddIcon, EditIcon } from '@chakra-ui/icons';
 import { Providers, useDataDispatch, useDataState } from '../app/providers';
-import { DragDropContext, Droppable, Draggable, DropResult, DraggableProvidedDraggableProps } from "react-beautiful-dnd";
+import { DragDropContext, Droppable, Draggable, DropResult, DraggableProvidedDraggableProps, DraggableLocation, DroppableId } from "react-beautiful-dnd";
 import AddTask from './AddTask';
 import EditTask from './EditTask';
 
@@ -18,6 +18,8 @@ const reorder = (list: TaskProps[], startIndex: number, endIndex: number) => {
 
     return result;
 };
+
+
 
 const grid = 8;
 
@@ -87,44 +89,14 @@ const columns = {
 
 const Column: React.FC<ColumnProps> = ({ columnData, type, addTask, editTask, kanbanData, useDispatch }) => {
 
-    const onDragEnd = (result: DropResult) => {
-        if (!result.destination) {
-            return;
-        }
 
-        let payload: KanbanData = kanbanData
-        switch (type) {
-            case 'todo':
-
-                columnData = reorder(kanbanData.todoData, result.source.index, result.destination.index);
-                payload = { ...kanbanData, todoData: columnData }
-                break;
-
-            case 'inprogress':
-                columnData = reorder(kanbanData.inProgressData, result.source.index, result.destination.index);
-                payload = { ...kanbanData, inProgressData: columnData }
-                break;
-            case 'done':
-                columnData = reorder(kanbanData.doneData, result.source.index, result.destination.index);
-                payload = { ...kanbanData, doneData: columnData }
-                break;
-            default:
-                break;
-        }
-    
-        useDispatch({ type: "SET_DATA", payload })
-        localStorage.setItem('kanbanData', JSON.stringify(payload));
-
-    };
-
-
-
+    const ind = type === "todo" ? 0 : type === "inprogress" ? 1 : 2
 
     return (
         <div>
-            <DragDropContext onDragEnd={onDragEnd}>
+            
 
-                <Droppable droppableId="droppable">
+                <Droppable key={ind} droppableId={`${ind}`}>
                     {(provided, snapshot) => (
                         <div
                             {...provided.droppableProps}
@@ -173,7 +145,7 @@ const Column: React.FC<ColumnProps> = ({ columnData, type, addTask, editTask, ka
                         </div>
                     )}
                 </Droppable>
-            </DragDropContext>
+            
         </div>
     );
 
