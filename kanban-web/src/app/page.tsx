@@ -48,11 +48,11 @@ const move = (source: TaskProps[], destination: TaskProps[], droppableSource: Dr
 
   destClone.splice(droppableDestination.index, 0, removed);
 
-  const result = {source: {}, dest: {}}
+  const result = { source: {}, dest: {} }
   result.source = sourceClone;
   result.dest = destClone;
 
-  
+
   console.log('move: ', result)
 
   return result;
@@ -64,8 +64,8 @@ export default function Home() {
   const dispatch = useDataDispatch();
   const { todoData, inProgressData, doneData } = kanbanData
 
-  
-  
+
+
 
   const onDragEnd = (result: DropResult) => {
     const { source, destination } = result;
@@ -75,70 +75,68 @@ export default function Home() {
     let sourceColumn: TaskProps[] = kanbanData.todoData;
     let sourceName = "";
     let destName = "";
-    let moveResult = {source: {}, dest: {}};
+    let moveResult = { source: {}, dest: {} };
 
     if (!destination) {
       return;
     }
     const sInd = +source.droppableId;
     const dInd = +destination.droppableId;
-    console.log("sInd", sInd)
-    console.log("dInd", dInd)
 
-  
-    
-  switch (sInd) {
-    case 0:
+
+
+    switch (sInd) {
+      case 0:
         sourceColumn = kanbanData.todoData
         sourceName = "todoData"
         break;
 
-    case 1:
+      case 1:
         sourceColumn = kanbanData.inProgressData
         sourceName = "inProgressData"
         break;
-    case 2:
+      case 2:
         sourceColumn = kanbanData.doneData
         sourceName = "doneData"
         break;
-    default:
+      default:
         break;
     }
 
-  
 
-  switch (dInd.toString()) {
-    case '0':
+
+    switch (dInd.toString()) {
+      case '0':
         destinationColumn = kanbanData.todoData
         destName = "todoData"
         break;
-    case '1':
+      case '1':
         destinationColumn = kanbanData.inProgressData
         destName = "inProgressData"
         break;
-    case '2':
-       destinationColumn = kanbanData.doneData
-       destName = "doneData"
+      case '2':
+        destinationColumn = kanbanData.doneData
+        destName = "doneData"
         break;
-    default:
+      default:
         break;
-}
+    }
 
 
 
-  if (sInd === dInd) {
-    newItems = reorder(sourceColumn, source.index, destination.index);
-    payload = { ...kanbanData, [sourceName]: newItems }
+    if (sInd === dInd) {
+      newItems = reorder(sourceColumn, source.index, destination.index);
+      payload = { ...kanbanData, [sourceName]: newItems }
 
-  } else {
-    moveResult = move(sourceColumn, destinationColumn, source, destination);
-    payload = { ...kanbanData, [sourceName]: moveResult.source, [destName]: moveResult.dest }
+    } else {
+      moveResult = move(sourceColumn, destinationColumn, source, destination);
+      payload = { ...kanbanData, [sourceName]: moveResult.source, [destName]: moveResult.dest }
+
+    }
+    dispatch({ type: "SET_DATA", payload: payload })
+    localStorage.setItem('kanbanData', JSON.stringify(payload));
 
   }
-  dispatch({ type: "SET_DATA", payload: payload })
-  localStorage.setItem('kanbanData', JSON.stringify(payload));
-
-}
 
   function editTask(taskData: TaskProps) {
     let formattedData = []
@@ -221,11 +219,11 @@ export default function Home() {
         <Divider marginBottom={5} borderWidth="2px" />
 
         <Flex flexDirection="row" justifyContent="space-around" alignItems="stretch">
-        <DragDropContext onDragEnd={onDragEnd}>
-          <Column kanbanData={kanbanData} useDispatch={(action) => dispatch(action)} columnData={kanbanData.todoData} type="todo" addTask={addTask} editTask={editTask} />
-          <Column kanbanData={kanbanData} useDispatch={(action) => dispatch(action)} columnData={kanbanData.inProgressData} type="inprogress" addTask={addTask} editTask={editTask} />
-          <Column kanbanData={kanbanData} useDispatch={(action) => dispatch(action)} columnData={kanbanData.doneData} type="done" addTask={addTask} editTask={editTask} />
-        </DragDropContext>
+          <DragDropContext onDragEnd={onDragEnd}>
+            <Column kanbanData={kanbanData} useDispatch={(action) => dispatch(action)} columnData={kanbanData.todoData} type="todo" addTask={addTask} editTask={editTask} />
+            <Column kanbanData={kanbanData} useDispatch={(action) => dispatch(action)} columnData={kanbanData.inProgressData} type="inprogress" addTask={addTask} editTask={editTask} />
+            <Column kanbanData={kanbanData} useDispatch={(action) => dispatch(action)} columnData={kanbanData.doneData} type="done" addTask={addTask} editTask={editTask} />
+          </DragDropContext>
         </Flex>
       </main>
     </Providers>
