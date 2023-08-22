@@ -34,7 +34,7 @@ const getItemStyle = (isDragging: boolean, draggableStyle: DraggableProvidedDrag
 
     // styles we need to apply on draggables
     ...draggableStyle
-});
+} as React.CSSProperties );
 
 const getListStyle = (isDraggingOver: boolean) => ({
     background: isDraggingOver ? "#4A5568" : "#171923",
