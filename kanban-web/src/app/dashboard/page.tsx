@@ -36,8 +36,12 @@ type KanbanData = {
     doneData: TaskProps[] | []
 };
 
+interface RadioCardProps extends UseRadioProps {
+    children: React.ReactNode;
+}
 
-function RadioCard(props) {
+
+function RadioCard(props: RadioCardProps ) {
     const { getInputProps, getRadioProps } = useRadio(props)
 
 
