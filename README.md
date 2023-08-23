@@ -1,4 +1,4 @@
-# Projeto de Kanban e Dashboard
+# Projeto de Kanban-web e Dashboard
 Este projeto implementa um sistema de Kanban com um dashboard para visualização dos dados do Kanban, utilizando Typescript e tecnologias como React, Next.js, Chakra UI, React Beautiful DND e ApexCharts.
 
 # O que é um Kanban?
