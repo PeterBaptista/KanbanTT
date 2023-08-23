@@ -36,3 +36,19 @@ Neste GIF, você pode observar como:
 3. Solte a tarefa para movê-la para a nova coluna.
 
 Essa funcionalidade permite uma gestão flexível das tarefas, facilitando a adaptação do fluxo de trabalho conforme necessário.
+
+## Demonstração: Editando Tarefas
+
+Confira a demonstração abaixo que ilustra como editar as informações das tarefas diretamente no aplicativo mobile:
+
+![Editando Tarefas](https://github.com/PeterBaptista/KanbanTT/blob/master/kanbanMobile/components/editarTasks.gif)
+
+Neste GIF, é possível observar o seguinte processo:
+
+1. Toque na tarefa que você deseja editar para abrir seus detalhes.
+2. Selecione a opção de edição (geralmente um ícone de lápis).
+3. Modifique o título, descrição ou outros campos conforme necessário.
+4. Toque no botão "Salvar" ou equivalente para confirmar as alterações.
+
+Essa funcionalidade torna a gestão das tarefas mais eficiente, permitindo que os usuários atualizem facilmente as informações das tarefas existentes.
+
