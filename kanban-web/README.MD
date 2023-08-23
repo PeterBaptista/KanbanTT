@@ -22,3 +22,17 @@ Neste GIF, você pode ver o processo de adicionar uma nova tarefa. Os passos sã
 3. Toque no botão "Salvar" para adicionar a tarefa à coluna.
 
 Isso demonstra como a funcionalidade de adicionar tarefas funciona no aplicativo Kanban mobile.
+
+## Demonstração: Movendo Tarefas entre Colunas
+
+Veja abaixo uma demonstração de como é possível arrastar e soltar tarefas entre as diferentes colunas do Kanban usando o aplicativo mobile:
+
+![Movendo Tarefas](https://github.com/PeterBaptista/KanbanTT/blob/master/kanbanMobile/components/arrastarTasks.gif)
+
+Neste GIF, você pode observar como:
+
+1. Toque e segure a tarefa que você deseja mover.
+2. Arraste a tarefa para a coluna de destino.
+3. Solte a tarefa para movê-la para a nova coluna.
+
+Essa funcionalidade permite uma gestão flexível das tarefas, facilitando a adaptação do fluxo de trabalho conforme necessário.
